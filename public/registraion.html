@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSI Student Registration</title>
   <link rel="stylesheet" href="Css/reg.css">
-    <link rel="shortcut icon" href="assests/OIP.svg" type="image/x-icon">
-
+  <link rel="shortcut icon" href="assests/OIP.svg" type="image/x-icon">
 </head>
 <body>
   <!-- Header Section -->
@@ -29,16 +28,14 @@
             <label for="name">Full Name</label>
             <input type="text" id="name" placeholder="Enter your complete name" required>
           </div>
-          
           <div class="form-group">
             <label for="mobile">Mobile Number</label>
             <input type="tel" id="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
           </div>
           <div class="form-group">
-  <label for="email">Email Address</label>
-  <input type="email" id="email" placeholder="Enter your email" required>
-</div>
-
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+          </div>
         </div>
       </section>
 
@@ -55,7 +52,6 @@
               <option value="4">4th Year</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="branch">Branch/Specialization</label>
             <input type="text" id="branch" placeholder="e.g., Computer Science Engineering" required>
@@ -71,8 +67,6 @@
             <label for="amount">Registration Amount</label>
             <input type="number" id="amount" placeholder="Amount paid in ₹" required min="0">
           </div>
-          
-          
         </div>
 
         <!-- Status Selection -->
@@ -111,7 +105,6 @@
   </div>
 
   <script>
-    // Grab elements
     const btn = document.getElementById('submitBtn');
     const btnText = document.querySelector('.btn-text');
     const modalOverlay = document.getElementById('modalOverlay');
@@ -125,20 +118,17 @@
       option.addEventListener('click', () => {
         document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
-        const radio = option.querySelector('input[type="radio"]');
-        radio.checked = true;
+        option.querySelector('input[type="radio"]').checked = true;
       });
     });
 
     // Form validation
     function validateForm() {
       let isValid = true;
-      const fields = ['name', 'year', 'branch', 'amount', 'mobile'];
-      
+      const fields = ['name', 'year', 'branch', 'amount', 'mobile', 'email'];
       fields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         const formGroup = field.closest('.form-group');
-        
         if (!field.value.trim()) {
           formGroup.classList.add('error');
           isValid = false;
@@ -159,13 +149,9 @@
     function showModal(title = 'Success!', msg = '', isSuccess = true) {
       modalTitle.textContent = title;
       modalMsg.textContent = msg;
-      
-      if (isSuccess) {
-        modalIcon.innerHTML = '<div class="success-icon">✓</div>';
-      } else {
-        modalIcon.innerHTML = '<div class="success-icon" style="background: #e53e3e;">✗</div>';
-      }
-      
+      modalIcon.innerHTML = isSuccess 
+        ? '<div class="success-icon">✓</div>' 
+        : '<div class="success-icon" style="background: #e53e3e;">✗</div>';
       modalOverlay.classList.add('show');
     }
 
@@ -197,19 +183,13 @@
     }
 
     btn.addEventListener('click', async function () {
-      // Validate form
       if (!validateForm()) {
         showModal('Validation Error', 'Please fill in all required fields correctly and ensure your mobile number is 10 digits.', false);
-        
-        // Scroll to first error
         const firstError = document.querySelector('.form-group.error');
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
-      // Get form data
       const name = document.getElementById('name').value.trim();
       const year = document.getElementById('year').value;
       const branch = document.getElementById('branch').value.trim();
@@ -219,18 +199,16 @@
       const statusEl = document.querySelector('input[name="status"]:checked');
       const option = statusEl ? statusEl.value : 'interested';
 
-      // Show loading state
       btn.disabled = true;
       btnText.innerHTML = '<span class="loading"></span>Processing Registration...';
 
-      // Build FormData
       const fd = new FormData();
       fd.append('studentName', name);
       fd.append('year', year);
       fd.append('branch', branch);
       fd.append('amountPaid', amount);
       fd.append('mobileNumber', mobile);
-      fd.append("email",email)
+      fd.append('email', email);
 
       try {
         const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
@@ -240,12 +218,10 @@
 
         if (!res.ok) {
           const text = await res.text().catch(() => null);
-          console.error('Server error:', res.status, text);
           showModal('Submission Failed', text || `Server error (${res.status}). Please try again later.`, false);
           return;
         }
 
-        const text = await res.text().catch(() => 'Registration completed successfully!');
         showModal('Registration Complete!', 'Welcome to CSI! Your registration has been processed successfully. You will receive further updates on your mobile number.', true);
 
         // Reset form
@@ -256,16 +232,13 @@
         document.getElementById('mobile').value = '';
         document.getElementById('email').value = '';
 
-        fileInput.value = '';
         document.getElementById('interested').checked = true;
         document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
         document.querySelector('[data-value="interested"]').classList.add('selected');
 
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
       } catch (err) {
-        console.error('Network error:', err);
         showModal('Network Error', 'Unable to connect to server. Please check your internet connection and try again.', false);
       } finally {
         btn.disabled = false;
@@ -273,82 +246,15 @@
       }
     });
 
-    // Add entrance animations on scroll for better UX
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
+    // Add entrance animations on scroll
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animation = 'slideUp 0.6s ease-out forwards';
-        }
+        if (entry.isIntersecting) entry.target.style.animation = 'slideUp 0.6s ease-out forwards';
       });
     }, observerOptions);
 
-    document.querySelectorAll('.form-section').forEach(section => {
-      observer.observe(section);
-    });
+    document.querySelectorAll('.form-section').forEach(section => observer.observe(section));
   </script>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io();
-
-  // --- Room Setup ---
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
-  function getQueryParam(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-  }
-
-  const roomId = getCookie("id") || getQueryParam("id");
-  if (roomId) {
-    socket.emit("joinRoom", { room: roomId });
-    console.log(`📡 Joined room: ${roomId}`);
-  } else {
-    console.warn("No room id found in cookies or URL");
-  }
-
-  // --- Form Fields ---
-  const nameInput = document.getElementById('name');
-  const yearInput = document.getElementById('year');
-  const branchInput = document.getElementById('branch');
-  const mobileInput = document.getElementById('mobile');
-  const amountInput = document.getElementById('amount');
-  const emailInput = document.getElementById('email'); // New field
-
-  // --- Real-Time Emit Helper ---
-  function emitField(eventName, value) {
-    if (roomId) {
-      socket.emit(eventName, { room: roomId, [eventName]: value });
-      console.log(`📤 Emitted ${eventName}:`, value);
-    }
-  }
-
-  // --- Emit on Input/Change ---
-  nameInput.addEventListener('input', () => emitField("studentName", nameInput.value));
-  yearInput.addEventListener('change', () => emitField("year", yearInput.value));
-  branchInput.addEventListener('input', () => emitField("branch", branchInput.value));
-  mobileInput.addEventListener('input', () => emitField("mobileNumber", mobileInput.value));
-  amountInput.addEventListener('input', () => emitField("amountPaid", amountInput.value));
-  emailInput.addEventListener('input', () => emitField("email", emailInput.value)); 
-
-
-  // --- Optional: Private Message Signal ---
-  function sendPrivateMessage() {
-    if (roomId) {
-      socket.emit("privatemessage", { roomId: roomId, bool: true });
-      console.log("📩 Private message sent");
-    }
-  }
-</script>
-
-
 </body>
 </html>
