@@ -33,7 +33,7 @@ const transporter = nodemailer.createTransport({
             <p style="margin-top:10px; font-size:16px; color:#475569;">Thanks for registering with CSI! 🚀</p>
           </div>
           <div style="flex:1; display:flex; justify-content:center; align-items:center;">
-            ${img ? `<img src="data:image/png;base64,${img}" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:5px solid #fff; box-shadow:0 4px 20px rgba(0,0,0,0.2);" />` : ''}
+${img ? `<img src="data:image/png;base64,${img.toString('base64')}" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:5px solid #fff; box-shadow:0 4px 20px rgba(0,0,0,0.2);" />` : ''}
           </div>
         </div>
         <div style="background:#2563eb; color:#fff; text-align:center; padding:15px; font-size:16px;">Registered with CSI – Shaping your tech journey 🚀</div>
