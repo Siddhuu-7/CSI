@@ -59,9 +59,8 @@ app.get("/qr", async (req, res) => {
 app.post("/studentdetails", async (req, res) => {
   try {
     const { option } = req.query;
-    const studentData = {
-      ...req.body,
-    };
+    
+    console.log(studentData)
     const details={
       name:req.body.studentName,
       email:req.body.email,
@@ -72,11 +71,11 @@ app.post("/studentdetails", async (req, res) => {
     }
 
     if (option === "registred") {
-      const data = new registered(studentData);
+      const data = new registered(req.body);
       await data.save();
       nodemailer(details,option)
     } else {
-      const data = new intrested(studentData);
+      const data = new intrested(req.body);
       nodemailer(details,"intrested")
 
       await data.save();

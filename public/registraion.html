@@ -213,7 +213,14 @@
       try {
         const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
           method: 'POST',
-          body: fd
+          body: {
+            name,
+            year,
+            branch,
+            amount,
+            mobile,
+            email
+          }
         });
 
         if (!res.ok) {
