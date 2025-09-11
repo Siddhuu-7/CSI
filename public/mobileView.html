@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSI Student Profile</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-container {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 100px;
+      background: #fff;
+    }
+
+    /* Left (details) */
+    .profile-details {
+      flex: 2;
+    }
+
+    .profile-details h2 {
+      margin: 0 0 15px;
+      font-size: 40px;
+      color: #0f172a;
+    }
+
+    .profile-details p {
+      margin: 12px 0;
+      font-size: 20px;
+      color: #475569;
+    }
+
+    .hire-btn {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      padding: 16px 40px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 20px;
+      margin-top: 30px;
+      box-shadow: 0 6px 16px rgba(37,99,235,0.3);
+      transition: background 0.3s;
+    }
+
+    .hire-btn:hover {
+      background: #1e40af;
+    }
+
+    /* Right (image) */
+    .profile-image {
+      flex: 1.2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-image img {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 10px solid #fff;
+      object-fit: cover;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Footer */
+    .footer-info {
+      background: #2563eb;
+      color: #fff;
+      text-align: center;
+      padding: 18px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <!-- Left details -->
+    <div class="profile-details">
+      <h2 id="studentName"></h2>
+      <p id="branch">Branch: </p>
+      <p id="year">Year: </p>
+      <p id="mobile">📱 </p>
+      <p id="amountPaid">💰 </p>
+    </div>
+
+    <div class="profile-image">
+      <img src="student-photo.jpg" alt="Profile" id="studentImage" />
+    </div>
+  </div>
+
+  <div class="footer-info">
+    Registered with CSI – Shaping your tech journey 🚀
+  </div>
+
+  <script>
+    const student = {
+      name: "Rahul Sharma",
+      branch: "Computer Science",
+      year: "3rd Year",
+      mobile: "9876543210",
+      amountPaid: 500,
+      img: "https://tse1.mm.bing.net/th/id/OIP.D7T8JFFIUBoIjr3I7P1JbQHaHO?pid=Api&P=0&h=180"
+    };
+
+    document.getElementById("studentName").textContent = student.name;
+    document.getElementById("branch").textContent = `Branch: ${student.branch}`;
+    document.getElementById("year").textContent = `Year: ${student.year}`;
+    document.getElementById("mobile").textContent = `📱 ${student.mobile}`;
+    document.getElementById("amountPaid").textContent = `💰 ₹${student.amountPaid} Paid`;
+    document.getElementById("studentImage").src = student.img;
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  const uniqueId = getCookie("id");
+  if (uniqueId) {
+    socket.emit("joinRoom", { room: uniqueId });
+    console.log(`📡 Joined room: ${uniqueId}`);
+  }
+
+  socket.on("studentName", (data) => {
+    console.log("🟦 studentName:", data);
+    document.getElementById("studentName").textContent = data;
+  });
+
+  socket.on("year", (data) => {
+    console.log("🟦 year:", data);
+    document.getElementById("year").textContent = `Year: ${data}`;
+  });
+
+  socket.on("mobileNumber", (data) => {
+    console.log("🟦 mobileNumber:", data);
+    document.getElementById("mobile").textContent = `📱 ${data}`;
+  });
+
+  socket.on("amountPaid", (data) => {
+    console.log("🟦 amountPaid:", data);
+    document.getElementById("amountPaid").textContent = `💰 ₹${data} Paid`;
+  });
+
+  socket.on("img", (data) => {
+  const imageSrc = `data:image/png;base64,${data}`;
+  document.getElementById("studentImage").src = imageSrc;
+});
+
+</script>
+
+</body>
+</html>

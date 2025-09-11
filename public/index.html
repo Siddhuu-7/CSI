@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSI Web Portal - Computer Society of India</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0F2A44, #3B82F6);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+    }
+
+    .logo img {
+      width: 100px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: block;
+      margin: 0.5rem auto;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-login {
+      background: white;
+      color: #1E40AF;
+    }
+
+    .btn-register {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .qr-container {
+      margin-top: 1.5rem;
+    }
+
+    .qr-container img {
+      width: 220px;
+      height: 220px;
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="content">
+    <div class="logo">
+      <!-- CSI logo image -->
+    </div>
+
+    <h1>CSI Web Portal</h1>
+    <div class="subtitle">Computer Society of India</div>
+
+    <div id="info">Loading...</div>
+  </div>
+
+  <script>
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    const info = document.getElementById("info");
+
+    if (isMobile()) {
+      info.innerHTML = `
+        <button class="btn btn-register" onclick="handleRegister()">New Registration</button>
+      `;
+    } else {
+      info.innerHTML = `
+        <div class="qr-container">
+          <p>Scan this QR code with your mobile to continue</p>
+          <img src="http://localhost:5000/qr" alt="CSI Portal QR">
+        </div>
+      `;
+    }
+
+    function handleRegister() {
+      window.location.href = "/register";
+    }
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  const socket = io();
+  function navigate(bool){
+    if(bool){
+     window.location.href = "http://localhost:5000/mobiledetected"
+
+    }
+  }
+  const uniqueId = getCookie('id');
+  if (uniqueId) {
+    socket.emit('joinRoom', { room: uniqueId });
+
+    console.log(`Joined room: ${uniqueId}`);
+
+    socket.on('privateMessage', ({ message }) => {
+      navigate(message)
+    });
+
+   
+  }
+ 
+</script>
+
+
+</body>
+</html>
