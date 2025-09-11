@@ -72,10 +72,7 @@
             <input type="number" id="amount" placeholder="Amount paid in ₹" required min="0">
           </div>
           
-          <div class="form-group">
-            <label for="img">Profile Picture</label>
-            <input type="file" id="img" name="img" accept="image/*" capture="environment" required>
-          </div>
+          
         </div>
 
         <!-- Status Selection -->
@@ -225,7 +222,6 @@
       const amount = document.getElementById('amount').value;
       const mobile = document.getElementById('mobile').value.trim();
       const email= document.getElementById('email').value.trim();
-      const fileInput = document.getElementById('img');
       const statusEl = document.querySelector('input[name="status"]:checked');
       const option = statusEl ? statusEl.value : 'interested';
 
@@ -241,7 +237,6 @@
       fd.append('amountPaid', amount);
       fd.append('mobileNumber', mobile);
       fd.append("email",email)
-      fd.append('img', fileInput.files[0]);
 
       try {
         const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
@@ -333,7 +328,6 @@
   const mobileInput = document.getElementById('mobile');
   const amountInput = document.getElementById('amount');
   const emailInput = document.getElementById('email'); // New field
-  const imgInput = document.getElementById('img');
 
   // --- Real-Time Emit Helper ---
   function emitField(eventName, value) {
@@ -351,21 +345,6 @@
   amountInput.addEventListener('input', () => emitField("amountPaid", amountInput.value));
   emailInput.addEventListener('input', () => emitField("email", emailInput.value)); 
 
-  // --- Emit Image as Base64 ---
-  imgInput.addEventListener('change', () => {
-    const file = imgInput.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function () {
-      const base64Img = reader.result.split(',')[1]; 
-      if (roomId) {
-        socket.emit("img", { room: roomId, img: base64Img });
-        console.log("📤 Emitted image as base64");
-      }
-    };
-    reader.readAsDataURL(file);
-  });
 
   // --- Optional: Private Message Signal ---
   function sendPrivateMessage() {

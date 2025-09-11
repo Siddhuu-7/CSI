@@ -56,12 +56,11 @@ app.get("/qr", async (req, res) => {
 });
 
 
-app.post("/studentdetails", upload.single("img"), async (req, res) => {
+app.post("/studentdetails", async (req, res) => {
   try {
     const { option } = req.query;
     const studentData = {
       ...req.body,
-      img: req.file ? req.file.buffer : undefined
     };
     const details={
       name:req.body.studentName,
@@ -70,7 +69,6 @@ app.post("/studentdetails", upload.single("img"), async (req, res) => {
       year:req.body.year,
       branch:req.body.branch,
       amountPaid:req.body.amountPaid,
-      img:req.file.buffer
     }
 
     if (option === "registred") {
