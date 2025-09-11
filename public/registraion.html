@@ -4,12 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSI Student Registration</title>
-  <link rel="stylesheet" href="Css/reg.css">
-    <link rel="shortcut icon" href="assests/OIP.svg" type="image/x-icon">
-
+  <link rel="stylesheet" href="css/reg.css">
+  <link rel="shortcut icon" href="assets/OIP.svg" type="image/x-icon">
+  <style>
+    /* Minimal styling for modal and error */
+    .error input, .error select { border: 2px solid red; }
+    .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: #fff; padding: 20px; border-radius: 8px; max-width: 400px; width: 90%; text-align:center; }
+    .success-icon { font-size: 2rem; color: green; margin-bottom: 10px; }
+  </style>
 </head>
 <body>
-  <!-- Header Section -->
+  <!-- Header -->
   <header class="header">
     <div class="logo-section">
       <div class="logo-placeholder">CSI</div>
@@ -21,7 +28,8 @@
   <!-- Main Content -->
   <main class="main-content">
     <div class="form-container">
-      <!-- Personal Information Section -->
+      
+      <!-- Personal Information -->
       <section class="form-section">
         <h2 class="section-title">Personal Information</h2>
         <div class="form-grid">
@@ -29,19 +37,18 @@
             <label for="name">Full Name</label>
             <input type="text" id="name" placeholder="Enter your complete name" required>
           </div>
-          
           <div class="form-group">
             <label for="mobile">Mobile Number</label>
             <input type="tel" id="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
           </div>
           <div class="form-group">
-  <label for="email">Email Address</label>
-  <input type="email" id="email" placeholder="Enter your email" required>
-</div>
-
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+          </div>
         </div>
       </section>
 
+      <!-- Academic Details -->
       <section class="form-section">
         <h2 class="section-title">Academic Details</h2>
         <div class="form-grid">
@@ -55,7 +62,6 @@
               <option value="4">4th Year</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="branch">Branch/Specialization</label>
             <input type="text" id="branch" placeholder="e.g., Computer Science Engineering" required>
@@ -63,7 +69,7 @@
         </div>
       </section>
 
-      <!-- Registration Details Section -->
+      <!-- Registration Details -->
       <section class="form-section">
         <h2 class="section-title">Registration Details</h2>
         <div class="form-grid">
@@ -71,8 +77,6 @@
             <label for="amount">Registration Amount</label>
             <input type="number" id="amount" placeholder="Amount paid in ₹" required min="0">
           </div>
-          
-          
         </div>
 
         <!-- Status Selection -->
@@ -91,19 +95,17 @@
         </div>
       </section>
 
-      <!-- Submit Section -->
+      <!-- Submit -->
       <section class="submit-section">
-        <button id="submitBtn">
-          <span class="btn-text">Complete Registration</span>
-        </button>
+        <button id="submitBtn"><span class="btn-text">Complete Registration</span></button>
       </section>
     </div>
   </main>
 
-  <!-- Modal popup -->
+  <!-- Modal -->
   <div id="modalOverlay" class="modal-overlay">
     <div class="modal">
-      <div id="modalIcon"></div>
+      <div id="modalIcon" class="success-icon">✓</div>
       <h3 id="modalTitle">Success!</h3>
       <p id="modalMsg">Your registration has been submitted successfully.</p>
       <button id="modalClose">Continue</button>
@@ -111,7 +113,6 @@
   </div>
 
   <script>
-    // Grab elements
     const btn = document.getElementById('submitBtn');
     const btnText = document.querySelector('.btn-text');
     const modalOverlay = document.getElementById('modalOverlay');
@@ -120,241 +121,102 @@
     const modalIcon = document.getElementById('modalIcon');
     const modalClose = document.getElementById('modalClose');
 
-    // Radio button selection handling
+    // Radio selection
     document.querySelectorAll('.radio-option').forEach(option => {
       option.addEventListener('click', () => {
         document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
-        const radio = option.querySelector('input[type="radio"]');
-        radio.checked = true;
+        option.querySelector('input[type="radio"]').checked = true;
       });
     });
 
-    // Form validation
+    // Validation
     function validateForm() {
       let isValid = true;
-      const fields = ['name', 'year', 'branch', 'amount', 'mobile'];
-      
-      fields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
+      const fields = ['name', 'year', 'branch', 'amount', 'mobile', 'email'];
+      fields.forEach(id => {
+        const field = document.getElementById(id);
         const formGroup = field.closest('.form-group');
-        
-        if (!field.value.trim()) {
+        if (!field.value.trim() || (id==='mobile' && !/^\d{10}$/.test(field.value.trim()))) {
           formGroup.classList.add('error');
           isValid = false;
         } else {
           formGroup.classList.remove('error');
         }
       });
-
-      const mobile = document.getElementById('mobile').value.trim();
-      if (mobile && !/^\d{10}$/.test(mobile)) {
-        document.getElementById('mobile').closest('.form-group').classList.add('error');
-        isValid = false;
-      }
-
-      const fileInput = document.getElementById('img');
-      if (!fileInput.files.length) {
-        fileInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      }
-
       return isValid;
     }
 
-    function showModal(title = 'Success!', msg = '', isSuccess = true) {
+    function showModal(title, msg, isSuccess=true) {
       modalTitle.textContent = title;
       modalMsg.textContent = msg;
-      
-      if (isSuccess) {
-        modalIcon.innerHTML = '<div class="success-icon">✓</div>';
-      } else {
-        modalIcon.innerHTML = '<div class="success-icon" style="background: #e53e3e;">✗</div>';
-      }
-      
+      modalIcon.textContent = isSuccess ? '✓' : '✗';
+      modalIcon.style.color = isSuccess ? 'green' : 'red';
       modalOverlay.classList.add('show');
     }
 
-    function hideModal() {
-      modalOverlay.classList.remove('show');
-    }
-
+    function hideModal() { modalOverlay.classList.remove('show'); }
     modalClose.addEventListener('click', hideModal);
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) hideModal();
-    });
+    modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) hideModal(); });
 
-    // Remove error styling on input
-    document.querySelectorAll('input, select').forEach(field => {
-      field.addEventListener('input', () => {
-        field.closest('.form-group').classList.remove('error');
-      });
-    });
+    // Remove error on input
+    document.querySelectorAll('input, select').forEach(f => f.addEventListener('input', () => {
+      f.closest('.form-group').classList.remove('error');
+    }));
 
-    // Smooth scrolling for form sections on mobile
-    if (window.innerWidth <= 768) {
-      document.querySelectorAll('input, select').forEach(field => {
-        field.addEventListener('focus', () => {
-          setTimeout(() => {
-            field.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }, 300);
-        });
-      });
-    }
-
-    btn.addEventListener('click', async function () {
-      // Validate form
-      if (!validateForm()) {
-        showModal('Validation Error', 'Please fill in all required fields correctly and ensure your mobile number is 10 digits.', false);
-        
-        // Scroll to first error
+    btn.addEventListener('click', async () => {
+      if(!validateForm()) {
+        showModal('Validation Error', 'Please fill in all fields correctly.', false);
         const firstError = document.querySelector('.form-group.error');
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        if(firstError) firstError.scrollIntoView({behavior:'smooth', block:'center'});
         return;
       }
 
-      // Get form data
-      const name = document.getElementById('name').value.trim();
-      const year = document.getElementById('year').value;
-      const branch = document.getElementById('branch').value.trim();
-      const amount = document.getElementById('amount').value;
-      const mobile = document.getElementById('mobile').value.trim();
-      const email= document.getElementById('email').value.trim();
-      const statusEl = document.querySelector('input[name="status"]:checked');
-      const option = statusEl ? statusEl.value : 'interested';
+      // Collect form data
+      const data = {
+        studentName: document.getElementById('name').value.trim(),
+        year: document.getElementById('year').value,
+        branch: document.getElementById('branch').value.trim(),
+        amountPaid: document.getElementById('amount').value,
+        mobileNumber: document.getElementById('mobile').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        status: document.querySelector('input[name="status"]:checked').value
+      };
 
-      // Show loading state
       btn.disabled = true;
-      btnText.innerHTML = '<span class="loading"></span>Processing Registration...';
-
-      // Build FormData
-      const fd = new FormData();
-      fd.append('studentName', name);
-      fd.append('year', year);
-      fd.append('branch', branch);
-      fd.append('amountPaid', amount);
-      fd.append('mobileNumber', mobile);
-      fd.append("email",email)
+      btnText.innerHTML = 'Processing Registration...';
 
       try {
-        const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
-          method: 'POST',
-          body: fd
+        const fd = new FormData();
+        for (const key in data) fd.append(key, data[key]);
+
+        const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${data.status}`, {
+          method: 'POST', body: fd
         });
 
-        if (!res.ok) {
-          const text = await res.text().catch(() => null);
-          console.error('Server error:', res.status, text);
-          showModal('Submission Failed', text || `Server error (${res.status}). Please try again later.`, false);
+        if(!res.ok) {
+          const text = await res.text().catch(()=>'Server error');
+          showModal('Submission Failed', text, false);
           return;
         }
 
-        const text = await res.text().catch(() => 'Registration completed successfully!');
-        showModal('Registration Complete!', 'Welcome to CSI! Your registration has been processed successfully. You will receive further updates on your mobile number.', true);
+        showModal('Registration Complete!', 'Welcome to CSI! Your registration has been processed successfully.', true);
 
         // Reset form
-        document.getElementById('name').value = '';
-        document.getElementById('year').value = '';
-        document.getElementById('branch').value = '';
-        document.getElementById('amount').value = '';
-        document.getElementById('mobile').value = '';
-        document.getElementById('email').value = '';
-
-        fileInput.value = '';
+        document.querySelectorAll('input').forEach(i => i.value='');
+        document.getElementById('year').value='';
         document.getElementById('interested').checked = true;
         document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
         document.querySelector('[data-value="interested"]').classList.add('selected');
+        window.scrollTo({top:0, behavior:'smooth'});
 
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      } catch (err) {
-        console.error('Network error:', err);
-        showModal('Network Error', 'Unable to connect to server. Please check your internet connection and try again.', false);
+      } catch(err) {
+        showModal('Network Error', 'Unable to connect to server.', false);
       } finally {
         btn.disabled = false;
-        btnText.innerHTML = 'Complete Registration';
+        btnText.textContent = 'Complete Registration';
       }
     });
-
-    // Add entrance animations on scroll for better UX
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animation = 'slideUp 0.6s ease-out forwards';
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.form-section').forEach(section => {
-      observer.observe(section);
-    });
   </script>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io();
-
-  // --- Room Setup ---
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
-  function getQueryParam(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-  }
-
-  const roomId = getCookie("id") || getQueryParam("id");
-  if (roomId) {
-    socket.emit("joinRoom", { room: roomId });
-    console.log(`📡 Joined room: ${roomId}`);
-  } else {
-    console.warn("No room id found in cookies or URL");
-  }
-
-  // --- Form Fields ---
-  const nameInput = document.getElementById('name');
-  const yearInput = document.getElementById('year');
-  const branchInput = document.getElementById('branch');
-  const mobileInput = document.getElementById('mobile');
-  const amountInput = document.getElementById('amount');
-  const emailInput = document.getElementById('email'); // New field
-
-  // --- Real-Time Emit Helper ---
-  function emitField(eventName, value) {
-    if (roomId) {
-      socket.emit(eventName, { room: roomId, [eventName]: value });
-      console.log(`📤 Emitted ${eventName}:`, value);
-    }
-  }
-
-  // --- Emit on Input/Change ---
-  nameInput.addEventListener('input', () => emitField("studentName", nameInput.value));
-  yearInput.addEventListener('change', () => emitField("year", yearInput.value));
-  branchInput.addEventListener('input', () => emitField("branch", branchInput.value));
-  mobileInput.addEventListener('input', () => emitField("mobileNumber", mobileInput.value));
-  amountInput.addEventListener('input', () => emitField("amountPaid", amountInput.value));
-  emailInput.addEventListener('input', () => emitField("email", emailInput.value)); 
-
-
-  // --- Optional: Private Message Signal ---
-  function sendPrivateMessage() {
-    if (roomId) {
-      socket.emit("privatemessage", { roomId: roomId, bool: true });
-      console.log("📩 Private message sent");
-    }
-  }
-</script>
-
-
 </body>
 </html>
