@@ -242,7 +242,7 @@
       fd.append('img', fileInput.files[0]);
 
       try {
-        const res = await fetch(`/studentdetails?option=${option}`, {
+        const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
           method: 'POST',
           body: fd
         });

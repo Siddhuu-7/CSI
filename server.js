@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { registered, intrested } = require("./student.model");
-
+const nodemailer=require("./nodemailer")
 dotenv.config();
 
 const app = express();
@@ -63,11 +63,24 @@ app.post("/studentdetails", upload.single("img"), async (req, res) => {
       ...req.body,
       img: req.file ? req.file.buffer : undefined
     };
+    const details={
+      name:req.body.studentName,
+      email:req.body.email,
+      mobile:req.body.mobileNumber,
+      year:req.body.year,
+      branch:req.body.branch,
+      amountPaid:req.body.amountPaid,
+      img:req.file.buffer
+    }
+
     if (option === "registred") {
       const data = new registered(studentData);
       await data.save();
+      nodemailer(details,option)
     } else {
       const data = new intrested(studentData);
+      nodemailer(details,"intrested")
+
       await data.save();
     }
     res.status(200).send("Student details saved successfully!");
