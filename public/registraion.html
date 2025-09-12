@@ -212,16 +212,19 @@
 
       try {
         const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
-          method: 'POST',
-          body: {
-            name,
-            year,
-            branch,
-            amount,
-            mobile,
-            email
-          }
-        });
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    studentName: name,
+    year,
+    branch,
+    amountPaid: amount,
+    mobileNumber: mobile,
+    email,
+  }),
+});
 
         if (!res.ok) {
           const text = await res.text().catch(() => null);
