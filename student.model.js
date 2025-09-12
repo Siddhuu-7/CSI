@@ -26,6 +26,7 @@ const studentSchema = new mongoose.Schema({
     match: /^[0-9]{10}$/
   },
   email:{type:String},
+  selectedPlan:{type:String},
   amountPaid: {
     type: Number,
     required: true,
