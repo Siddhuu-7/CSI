@@ -54,7 +54,21 @@
           </div>
           <div class="form-group">
             <label for="branch">Branch/Specialization</label>
-            <input type="text" id="branch" placeholder="e.g., Computer Science Engineering" required>
+            <select id="branch" required>
+              <option value="">Select your current year</option>
+              <option value="IT">IT</option>
+              <option value="CSBS">CSBS</option>
+              <option value="AIDS">AIDS</option>
+              <option value="CSE">CSE</option>
+              <option value="AIML">AIML</option>
+              <option value="CSD">CSD</option>
+              <option value="CIC">CIC</option>
+              <option value="CIVIL">CIVIL</option>
+              <option value="MECH">MECH</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="CSIT">CSIT</option>
+            </select>
           </div>
         </div>
       </section>
@@ -64,11 +78,22 @@
         <h2 class="section-title">Registration Details</h2>
         <div class="form-grid">
           <div class="form-group">
+            <label for="plan">Plans</label>
+            <select id="plan" required>
+              <option value="">Select your current plan</option>
+              <option value="450">450</option>
+              <option value="650">650</option>
+              <option value="1400">1400</option>
+            </select>
+          </div>
+          
+        <div class="form-grid">
+          <div class="form-group">
             <label for="amount">Registration Amount</label>
             <input type="number" id="amount" placeholder="Amount paid in ₹" required min="0">
           </div>
-        </div>
 
+        </div>
         <!-- Status Selection -->
         <div class="radio-section">
           <h3 class="section-title">Registration Status</h3>
@@ -193,6 +218,7 @@
       const name = document.getElementById('name').value.trim();
       const year = document.getElementById('year').value;
       const branch = document.getElementById('branch').value.trim();
+      const plan = document.getElementById('plan').value;
       const amount = document.getElementById('amount').value;
       const mobile = document.getElementById('mobile').value.trim();
       const email= document.getElementById('email').value.trim();
@@ -209,7 +235,16 @@
       fd.append('amountPaid', amount);
       fd.append('mobileNumber', mobile);
       fd.append('email', email);
-
+      console.log( {
+        studentName: name,
+    year,
+    branch,
+    plan,
+    amountPaid: amount,
+    mobileNumber: mobile,
+    email,
+          }
+      )
       try {
         const res = await fetch(`https://csi-uyhe.onrender.com/studentdetails?option=${option}`, {
   method: 'POST',
@@ -220,11 +255,13 @@
     studentName: name,
     year,
     branch,
+    plan,
     amountPaid: amount,
     mobileNumber: mobile,
     email,
   }),
 });
+
 
         if (!res.ok) {
           const text = await res.text().catch(() => null);
