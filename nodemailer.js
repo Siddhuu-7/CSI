@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
  * @param {string} option - Registration status/option
  */
 async function sendStudentEmail(student, option) {
-  const { name, email, mobile, year, branch, amountPaid } = student;
+  const { name, email, mobile, year, branch,plan, amountPaid } = student;
 
   if (!email) {
     console.warn("⚠️ No email provided for student:", name);
@@ -162,6 +162,7 @@ Registration Details:
 - Branch: ${branch}
 - Year: ${year}
 - Mobile: ${mobile}
+-Plan:${plan}
 - Amount Paid: ₹${amountPaid}
 - Status: ${option}
 
