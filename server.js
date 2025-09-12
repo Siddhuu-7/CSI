@@ -19,9 +19,9 @@ const io = socketIo(server,{
 
 const PORT = 5000;
 
-// mongoose.connect(process.env.MONGODBSTRING)
-//   .then(() => console.log("noSQL connected"))
-//   .catch(error => console.log(error.message));
+mongoose.connect(process.env.MONGODBSTRING)
+  .then(() => console.log("noSQL connected"))
+  .catch(error => console.log(error.message));
 app.use(upload.none()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -60,6 +60,7 @@ app.post("/studentdetails", async (req, res) => {
     const { option } = req.query;
     
     console.log(req.body)
+      console.log(option)
     const details={
       name:req.body.studentName,
       email:req.body.email,
@@ -72,10 +73,10 @@ app.post("/studentdetails", async (req, res) => {
     if (option === "registred") {
       const data = new registered(req.body);
       await data.save();
-      // nodemailer(details,option)
+      nodemailer(details,option)
     } else {
       const data = new intrested(req.body);
-      // nodemailer(details,"intrested")
+      nodemailer(details,"intrested")
 
       await data.save();
     }
