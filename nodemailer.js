@@ -52,14 +52,58 @@ async function sendStudentEmail(student, option) {
             <h3 style="color: #1e293b; font-size: 18px; margin: 0 0 15px; font-weight: 600;">
               📋 Registration Details
             </h3>
-            <div style="display: grid; gap: 8px;">
-              <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Branch:</strong> ${branch}</p>
-              <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Year:</strong> ${year}</p>
-              <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Mobile:</strong> ${mobile}</p>
-              ${plan ? `<p style="margin: 0; color: #475569; font-size: 15px;"><strong>Plan:</strong> <span style="color: #7c3aed; font-weight: 600;">${plan}</span></p>` : ''}
-              <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Amount Paid:</strong> <span style="color: #059669; font-weight: 600;">₹${amountPaid}</span></p>
-              <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Status:</strong> <span style="color: #3b82f6; font-weight: 600;">${option}</span></p>
-            </div>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  <strong>Branch:</strong>
+                </td>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  ${branch}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  <strong>Year:</strong>
+                </td>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  ${year}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  <strong>Mobile:</strong>
+                </td>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  ${mobile}
+                </td>
+              </tr>
+              ${plan ? `
+              <tr>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  <strong>Plan:</strong>
+                </td>
+                <td style="padding: 8px 0; color: #7c3aed; font-size: 15px; font-weight: 600; vertical-align: top;">
+                  ${plan}
+                </td>
+              </tr>
+              ` : ''}
+              <tr>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  <strong>Amount Paid:</strong>
+                </td>
+                <td style="padding: 8px 0; color: #059669; font-size: 15px; font-weight: 600; vertical-align: top;">
+                  ₹${amountPaid}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #475569; font-size: 15px; vertical-align: top;">
+                  <strong>Status:</strong>
+                </td>
+                <td style="padding: 8px 0; color: #3b82f6; font-size: 15px; font-weight: 600; vertical-align: top;">
+                  ${option}
+                </td>
+              </tr>
+            </table>
           </div>
 
           <!-- Motivational Section -->
