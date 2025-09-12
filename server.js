@@ -70,7 +70,7 @@ app.post("/studentdetails", async (req, res) => {
       amountPaid:req.body.amountPaid,
     }
 
-    if (option === "registred") {
+    if (option === "registered") {
       const data = new registered(req.body);
       await data.save();
       nodemailer(details,option)
