@@ -1,4 +1,4 @@
-const nodemailer=require("nodemailer")
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
  * @param {string} option - Registration status/option
  */
 async function sendStudentEmail(student, option) {
-  const { name, email, mobile, year, branch,plan, amountPaid } = student;
+  const { name, email, mobile, year, branch, plan, amountPaid } = student;
 
   if (!email) {
     console.warn("⚠️ No email provided for student:", name);
@@ -23,7 +23,7 @@ async function sendStudentEmail(student, option) {
 
   try {
     const html = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; min-height: 100vh;">
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px;">
       <div style="max-width: 650px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
         
         <!-- Header Section -->
@@ -56,6 +56,7 @@ async function sendStudentEmail(student, option) {
               <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Branch:</strong> ${branch}</p>
               <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Year:</strong> ${year}</p>
               <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Mobile:</strong> ${mobile}</p>
+              ${plan ? `<p style="margin: 0; color: #475569; font-size: 15px;"><strong>Plan:</strong> <span style="color: #7c3aed; font-weight: 600;">${plan}</span></p>` : ''}
               <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Amount Paid:</strong> <span style="color: #059669; font-weight: 600;">₹${amountPaid}</span></p>
               <p style="margin: 0; color: #475569; font-size: 15px;"><strong>Status:</strong> <span style="color: #3b82f6; font-weight: 600;">${option}</span></p>
             </div>
@@ -162,7 +163,7 @@ Registration Details:
 - Branch: ${branch}
 - Year: ${year}
 - Mobile: ${mobile}
--Plan:${plan}
+${plan ? `- Plan: ${plan}` : ''}
 - Amount Paid: ₹${amountPaid}
 - Status: ${option}
 
@@ -209,4 +210,22 @@ Empowering the next generation of tech innovators
   }
 }
 
+// Export the function without calling it
 module.exports = sendStudentEmail;
+
+// Example usage (commented out):
+/*
+const testStudent = {
+  name: "John Doe",
+  email: "john@example.com",
+  mobile: "9876543210",
+  year: "3rd Year",
+  branch: "Computer Science",
+  plan: "Premium",
+  amountPaid: 500
+};
+
+sendStudentEmail(testStudent, "Confirmed").then(result => {
+  console.log("Email result:", result);
+});
+*/
