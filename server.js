@@ -67,6 +67,7 @@ app.post("/studentdetails", async (req, res) => {
       mobile:req.body.mobileNumber,
       year:req.body.year,
       branch:req.body.branch,
+     plan:req.body.plan,
       amountPaid:req.body.amountPaid,
     }
 
